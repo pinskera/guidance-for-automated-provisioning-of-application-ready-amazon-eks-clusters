@@ -16,14 +16,14 @@ cluster_config = {
   private_eks_cluster  = false
   cluster_iam_role_arn = "{{CLUSTER_IAM_ROLE_ARN}}"
   use_intra_subnets    = false
-  create_mng_system    = true
+  create_mng_system    = false
   capabilities = {
-    networking    = true
-    coredns       = true
-    identity      = true
-    autoscaling   = true
-    blockstorage  = true
-    loadbalancing = true
+    networking    = false
+    coredns       = false
+    identity      = false
+    autoscaling   = false
+    blockstorage  = false
+    loadbalancing = false
     gitops        = false
   }
 }
