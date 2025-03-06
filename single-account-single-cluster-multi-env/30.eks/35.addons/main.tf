@@ -2,6 +2,12 @@ data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
 
+# Set local values for AWS region and account ID
+locals {
+  aws_region = data.aws_region.current.name
+  account_id = data.aws_caller_identity.current.account_id
+}
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.16.2"
@@ -80,7 +86,51 @@ module "eks_blueprints_addons" {
     create_kubernetes_resources = true
     enable_argocd               = true
     argocd_namespace            = "argocd"
-
+    
+    # Complete tolerations configuration for all ArgoCD components
+    values = [
+      yamlencode({
+        # Global tolerations that apply to all components
+        global = {
+          tolerations = [local.critical_addons_tolerations.tolerations[0]]
+        }
+        
+        # Controller tolerations
+        controller = {
+          tolerations = [local.critical_addons_tolerations.tolerations[0]]
+        }
+        
+        # Server tolerations
+        server = {
+          tolerations = [local.critical_addons_tolerations.tolerations[0]]
+        }
+        
+        # Repo server tolerations
+        repoServer = {
+          tolerations = [local.critical_addons_tolerations.tolerations[0]]
+        }
+        
+        # ApplicationSet controller tolerations
+        applicationSet = {
+          tolerations = [local.critical_addons_tolerations.tolerations[0]]
+        }
+        
+        # Redis tolerations
+        redis = {
+          tolerations = [local.critical_addons_tolerations.tolerations[0]]
+        }
+        
+        # Dex server tolerations
+        dex = {
+          tolerations = [local.critical_addons_tolerations.tolerations[0]]
+        }
+        
+        # Notifications controller tolerations
+        notifications = {
+          tolerations = [local.critical_addons_tolerations.tolerations[0]]
+        }
+      })
+    ]
   }
 }
 
